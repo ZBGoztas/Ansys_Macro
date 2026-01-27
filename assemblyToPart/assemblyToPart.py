@@ -57,7 +57,7 @@ def process_assembly(input_step_file):
 
 # Ana işlem akışını başlat
 
-file_1 = os.listdir('<local-path>')
+file_1 = os.listdir(r'<local-path>')
 for file_0 in file_1:
     input_step_file = f'<local-path>'  # İşlenecek montaj dosyasının yolu
     process_assembly(input_step_file)
