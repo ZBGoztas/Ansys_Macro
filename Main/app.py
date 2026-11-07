@@ -32,8 +32,12 @@ import time
 import sys
 import csv
 import os
-os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = "<local-path>"
-os.environ["QT_QPA_PLATFORM"] = "windows"
+from pathlib import Path
+
+# Repository root (Main/app.py -> repo root)
+ROOT = Path(__file__).resolve().parents[1]
+MODEL_DIR = ROOT / "Model"
+OPEN_STEP_SCRIPT = ROOT / "assemblyToPart" / "openStep.py"
 
 
 class Ui_MainWindow(object):
@@ -403,19 +407,8 @@ class Ui_MainWindow(object):
         self.pushButton_DosyaGoruntule.setEnabled(True)
     
     def OpenStep(self):
-        # Conda ve ortam yolu
-        conda_path = r"<local-path>"
-        env_name = "ansys"
-
-        # Python script ve STEP dosyasının yolları
-        script_path = r"<local-path>"
-        file_path = self.file_path
-
-        # Komutu çalıştır
-        subprocess.run(
-            f'cmd.exe /c "{conda_path} && conda activate {env_name} && python \"{script_path}\" \"{file_path}\""',
-            shell=True
-        )
+        # Open the STEP viewer in a separate process using the same Python interpreter
+        subprocess.Popen([sys.executable, str(OPEN_STEP_SCRIPT), self.file_path])
 
     def meshAyarlarininBelirlenmesi(self):
         hacim_str = self.label_Hacim_Sonuc.text().replace(" mm³", "").strip()
@@ -446,7 +439,7 @@ class Ui_MainWindow(object):
                 'KisaEdge': [kisa_val],
                 'UzunEdge': [uzun_val]
             })
-        model_path = r'<local-path>'
+        model_path = MODEL_DIR / 'MeshSettings.pkl'
         loaded_model = joblib.load(model_path)
         y_pred_new = loaded_model.predict(new_data)
         # hedef_degiskenler = [
@@ -518,7 +511,7 @@ class Ui_MainWindow(object):
                 'meshProximityMinimumSize': [meshProximityMinimumSize],
                 'meshCurvatureNormalAngle': [meshCurvatureNormalAngle],
             })
-        model_path = r'<local-path>'
+        model_path = MODEL_DIR / 'MeshQuality.pkl'
         loaded_model = joblib.load(model_path)
         y_pred_new = loaded_model.predict(new_data)
         # hedef_degiskenler = [

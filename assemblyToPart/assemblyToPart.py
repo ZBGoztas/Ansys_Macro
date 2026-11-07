@@ -39,8 +39,7 @@ def save_part_as_step(part_shape, output_file):
 def process_assembly(input_step_file):
     # STEP dosyasını oku
     reader = read_step_file(input_step_file)  # STEP dosyasını oku ve bir reader nesnesi al
-    name0 = input_step_file.split('/')
-    name1 = name0[-1].replace(' ', '').split('.')[0]
+    name1 = os.path.splitext(os.path.basename(input_step_file))[0].replace(' ', '')
     if reader is None:  # Eğer dosya okunamadıysa
         return  # İşlemi sonlandır
 
@@ -49,7 +48,7 @@ def process_assembly(input_step_file):
 
     # Parçaları ayıkla
     parts = extract_parts_from_assembly(assembly_shape)  # Montajdaki parçaları ayıkla
-    os.mkdir(name1)
+    os.makedirs(name1, exist_ok=True)
     # Her bir parçayı ayrı STEP dosyasına kaydet
     for idx, part in enumerate(parts):  # Her bir parçayı sırayla işle
         output_file = f"{name1}/parca_{idx + 1}.step"  # Çıkış dosyasını isimlendir (örneğin: parca_1.step)
@@ -57,9 +56,13 @@ def process_assembly(input_step_file):
 
 # Ana işlem akışını başlat
 
-file_1 = os.listdir(r'<local-path>')
-for file_0 in file_1:
-    input_step_file = f'<local-path>'  # İşlenecek montaj dosyasının yolu
-    process_assembly(input_step_file)
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Split every STEP assembly in a folder into single-part STEP files.")
+    parser.add_argument("assembly_dir", help="Folder containing STEP assembly files")
+    args = parser.parse_args()
+    for file_0 in sorted(os.listdir(args.assembly_dir)):
+        if file_0.lower().endswith((".step", ".stp")):
+            process_assembly(os.path.join(args.assembly_dir, file_0))
 
 print('Bitti')

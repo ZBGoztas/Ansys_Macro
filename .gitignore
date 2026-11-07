@@ -1,3 +1,9 @@
 DateSet/
 veriMani.ipynb
 example/
+
+# Runtime logs
+INFO
+pymechanical_log.txt
+*.log
+__pycache__/

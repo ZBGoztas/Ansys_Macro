@@ -1,8 +1,6 @@
 import sys
 import os
 
-# Qt platform plugin yolunu (PyQt) tanımlıyoruz (importlardan önce ayarlamak önemli)
-os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = r"<local-path>"
 
 from OCC.Core.STEPControl import STEPControl_Reader
 from OCC.Core.IFSelect import IFSelect_RetDone
